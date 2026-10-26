@@ -7,6 +7,17 @@
 当前界面为：左侧应用列表（提示词工作台）+ 提示词注入（本机文件 / 网关注入）+ Seep 工具 + 使用教程 + 设置（通用 / 关于）。
 所有页面的数据都来自真实本地服务或浏览器本地存储，不包含演示数据。
 
+## 直接下载（Windows，免安装）
+
+[**寒霜注入工具 v1.0.0 便携版 — 单文件 exe**](https://github.com/yuanjibo/hanshuang-inject-tool/releases/tag/v1.0.0-portable)
+
+- 单文件，约 104 MB，双击即开，**不需要装 Node.js**（Electron 运行时已内置）
+- 首次启动会解压到 `%TEMP%`，慢一到两秒属正常
+- 想固定数据位置：`set HANSHUANG_HOME=E:\ReverseLabWorkspace\home` 后再启动
+- SHA256：`9c037163211f037319a11d5fb685749693a74aeb0bdf93dee71f212575ae02b9`
+
+要自己从源码跑或重新打包，看下面「一键脚本」和「打包便携版」两节。
+
 ## 界面精简
 
 侧栏只保留需要的入口，其余页面代码仍在，想恢复时改 `src/lib/navigation.ts` 里的
