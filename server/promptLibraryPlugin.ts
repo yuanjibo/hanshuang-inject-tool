@@ -15,7 +15,8 @@ import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Plugin } from "vite";
 
-const HOME = os.homedir();
+// HANSHUANG_HOME 覆盖数据根（见 .env.hanshuang），便于把数据固定到非系统盘。
+const HOME = process.env.HANSHUANG_HOME || os.homedir();
 const LIBRARY_FILE = path.join(HOME, ".cc-switch", "prompt-library.json");
 const STATE_FILE = path.join(HOME, ".cc-switch", "prompt-library-state.json");
 const BACKUP_ROOT = path.join(HOME, ".cc-switch", "backups", "prompt-library");

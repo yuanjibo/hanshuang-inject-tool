@@ -9,6 +9,7 @@ release-electron/
 .env.local
 *.tsbuildinfo
 .npmrc
+.env.hanshuang
 CLAUDE.md
 AGENTS.md
 GEMINI.md

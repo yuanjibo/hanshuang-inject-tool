@@ -17,7 +17,7 @@ function serverEntry() {
         __dirname,
         "..",
         "release",
-        "寒霜注入工具-1.0.0-便携版",
+        "寒霜注入工具-1.0.0",
         "server.mjs",
       );
 }

@@ -13,7 +13,8 @@ import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Plugin } from "vite";
 
-const HOME = os.homedir();
+// HANSHUANG_HOME 覆盖数据根（见 .env.hanshuang），便于把数据固定到非系统盘。
+const HOME = process.env.HANSHUANG_HOME || os.homedir();
 const CODEX_HOME = process.env.CODEX_HOME || path.join(HOME, ".codex");
 const BACKUP_BASE = path.join(HOME, ".cc-switch", "backups", "inject");
 const STATE_FILE = path.join(HOME, ".cc-switch", "inject-state.json");

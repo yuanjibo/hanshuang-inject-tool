@@ -8,7 +8,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   build: {
     ssr: path.resolve(__dirname, "server/standalone.ts"),
-    outDir: path.resolve(__dirname, "release/寒霜注入工具-1.0.0-便携版"),
+    outDir: path.resolve(__dirname, "release/寒霜注入工具-1.0.0"),
     emptyOutDir: false,
     target: "node20",
     minify: false,
