@@ -32,6 +32,66 @@ pnpm typecheck  # 类型检查
 > 国内装依赖：如果系统设了 HTTP_PROXY 代理，`pnpm install` 走 npmmirror 会很慢甚至卡住，
 > 临时去掉代理再装：`env -u HTTP_PROXY -u HTTPS_PROXY pnpm install`
 
+### 一键脚本（Windows）
+
+仓库根目录带四个脚本，把国内网络、缓存位置和依赖自检都固定好了：
+
+| 脚本 | 作用 |
+|---|---|
+| `start-hanshuang.cmd` | 起开发服务（缺依赖 / 缺 electron 会自动补） |
+| `pack-portable.cmd` | 打便携版 exe 到 `release-electron/` |
+
+`.cmd` 只是薄壳，真正的逻辑在 `start-hanshuang.ps1` / `pack-portable.ps1`。
+
+**为什么拆成两个文件**：`cmd.exe` 按系统 OEM 代码页（简体中文 Windows 是 GBK）解析
+`.cmd`，文件里只要有 UTF-8 中文就会把批处理语法打碎，报一堆
+`'xxx' 不是内部或外部命令`。所以 `.cmd` 里只放 ASCII，中文和逻辑全部放进
+`.ps1`（存成 UTF-8 with BOM，PowerShell 5.1 才读得对）。
+
+### 本机环境配置
+
+两份配置放在仓库根目录，**已被 `.gitignore` 排除**，不随仓库分发：
+
+- `.npmrc` —— 依赖仓库、镜像、electron 与 electron-builder 的缓存位置
+- `.env.hanshuang` —— 数据目录与应用路径
+
+从 `.env.hanshuang.example` 复制一份改成本机路径即可：
+
+```bash
+cp .env.hanshuang.example .env.hanshuang
+```
+
+| 变量 | 作用 |
+|---|---|
+| `HANSHUANG_HOME` | 数据根，**是「主目录替代品」**：程序会在它下面拼 `.cc-switch/`，所以它指向伪主目录，不是 `.cc-switch` 本身 |
+| `CODEX_HOME` | Codex 配置根，默认 `$HANSHUANG_HOME/.codex` |
+| `SEEP_PYTHON` | 跑 Seep MCP 的 Python（需装过 `mcp>=1.20,<1.29`） |
+| `SEEP_ROOT` | Seep-Reverse-Lab 仓库位置 |
+| `electron_config_cache` | electron 二进制缓存，避免落到 `%LOCALAPPDATA%` |
+| `ELECTRON_BUILDER_CACHE` | electron-builder 的 nsis / 7zip 缓存 |
+| `ELECTRON_BUILDER_BINARIES_MIRROR` | 打包资源镜像（github release 在国内基本连不上） |
+
+六个后端插件都读 `HANSHUANG_HOME`（`process.env.HANSHUANG_HOME || os.homedir()`），
+设了它之后提示词库、人物卡、备份、注入状态全部落在该目录下。
+
+### 打包便携版
+
+```bash
+pnpm dist:portable        # 等价于 build + build:server + electron-builder
+```
+
+或者直接双击 `pack-portable.cmd`（会先清中间产物、绕过代理、清掉
+`ELECTRON_RUN_AS_NODE`，然后构建）。
+
+产物：`release-electron/寒霜注入工具-便携版-1.0.0.exe`。
+
+打包时注意两点：
+
+- `vite.server.config.ts` 的 `outDir` 必须和 `electron-builder.yml` 的
+  `extraResources.from` 对得上，否则打包**表面成功**但 `resources/app/` 里缺文件。
+- 运行打包产物前，若 shell 里有 `ELECTRON_RUN_AS_NODE=1`，electron 会以纯 Node
+  模式启动，程序 exit code 1 且没有任何输出。
+
 ## 应用页：提示词工作台（所有应用）
 
 点侧栏任意 Agent（Claude Code、Codex、Gemini…）进入的不再是供应商列表，而是该应用的提示词工作台：
